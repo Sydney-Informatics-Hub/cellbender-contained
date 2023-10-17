@@ -1,0 +1,14 @@
+#PBS -P <PROJECT>
+#PBS -l select=1:ncpus=2:mem=8gb:ngpus=1
+#PBS -l walltime=0:10:00
+#PBS -N run01
+
+module load singularity cuda/10.2.89
+
+# Assuming you are running this from your project folder, /project/<YOUR_PROJECT>
+cd $PBS_O_WORKDIR
+
+### 2 EXAMPLE WORKFLOW ###
+export SINGULARITY_CACHEDIR=`pwd`
+export SINGULARITY_TMPDIR=`pwd`
+singularity run --nv --bind /project:/project tf.img /bin/bash -c "ipython test.py"

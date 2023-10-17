@@ -1,0 +1,20 @@
+#PBS -P <PROJECT>
+#PBS -l select=1:ncpus=2:mem=8gb:ngpus=0
+#PBS -l walltime=1:10:00
+#PBS -N build01
+
+module load singularity
+
+# Assuming you are running this from your project folder, /project/<YOUR_PROJECT>
+cd $PBS_O_WORKDIR
+
+### 1 BUILD IMAGE ###
+
+# If these are not set, it defaults to your home folder which will fill up very quickly.
+export SINGULARITY_CACHEDIR=`pwd`
+export SINGULARITY_TMPDIR=`pwd`
+
+singularity build tf.img docker://sydneyinformaticshub/tensorflow:2.3
+
+# Creates the file "tf.img" in your directory.
+# Reconfigure your jobscript and run the job in the next step.
