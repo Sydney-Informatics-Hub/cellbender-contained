@@ -1,6 +1,6 @@
 # Tensorflow Container
 
-Docker/Singularity image to run [Tensorflow](https://www.tensorflow.org/) on Centos 6.9 host kernel with Cuda10.2.
+Docker/Singularity image to run [Tensorflow](https://www.tensorflow.org/) on Centos 6.9 host kernel with Cuda10.2. The container is built on Ubuntu 16.04 image. 
 
 
 If you have used this work for a publication, you must acknowledge SIH, e.g: "The authors acknowledge the technical assistance provided by the Sydney Informatics Hub, a Core Research Facility of the University of Sydney."
@@ -15,7 +15,7 @@ cd /project/<YOUR_PROJECT>
 git clone https://github.com/Sydney-Informatics-Hub/tensorflow-contained.git
 cd tensorflow-contained
 jobid=`qsub artemis_build.pbs`
-qsub -W depend=afterok: artemis_run.pbs
+qsub -W depend=afterok:$jobid artemis_run.pbs
 ```
 Be sure to modify the `artemis_build.pbs` and `artemis_run.pbs` script to match your needs.
 
