@@ -8,16 +8,19 @@ If you have used this work for a publication, you must acknowledge SIH, e.g: "Th
 
 # Quickstart for Artemis
 
-Put this repo on Artemis e.g.
+Put this repo on Artemis e.g. in the quickest way you can:
 
 ```
 cd /project/<YOUR_PROJECT>
 git clone https://github.com/Sydney-Informatics-Hub/tensorflow-contained.git
+cd tensorflow-contained
+jobid=`qsub artemis_build.pbs`
+qsub -W depend=afterok: artemis_run.pbs
 ```
-Then `cd tensorflow-contained` and modify the `artemis_build.pbs` script and launch with `qsub artemis_build.pbs`.
-Then once the image has build  modify the `artemis_run.pbs` script and launch with `qsub artemis_run.pbs`.
+Be sure to modify the `artemis_build.pbs` and `artemis_run.pbs` script to match your needs.
 
-Otherwise here are the full instructions for getting there....
+Once you have built the container image you can move that to where your data is or vice-versa, or just point to it to launch the image.
+
 
 
 # How to recreate
@@ -49,6 +52,7 @@ export SINGULARITY_TMPDIR=`pwd`
 
 singularity build tf.img docker://sydneyinformaticshub/tensorflow:2.3
 ```
+This will create the `tf.img` image file.
 
 ## Run with singularity
 To run the singularity image (noting singularity mounts the current folder by default)
