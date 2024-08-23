@@ -14,7 +14,7 @@ cd $PBS_O_WORKDIR
 export SINGULARITY_CACHEDIR=`pwd`
 export SINGULARITY_TMPDIR=`pwd`
 
-singularity build tf.img docker://sydneyinformaticshub/tensorflow:2.3
+singularity build tf.img docker://sydneyinformaticshub/pydl
 
 # Creates the file "tf.img" in your directory.
 # Reconfigure your jobscript and run the job in the next step.

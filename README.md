@@ -1,6 +1,6 @@
-# Tensorflow Container
+# Deep Learning Container
 
-Docker/Singularity image to run [Tensorflow](https://www.tensorflow.org/) on Centos 6.9 host kernel with Cuda10.2. The container is built on Ubuntu 16.04 image. 
+Docker/Singularity image to run various Deep Learning tools on Centos 6.9 host kernel with Cuda10.2. The container is built on Ubuntu 16.04 image.
 
 
 If you have used this work for a publication, you must acknowledge SIH, e.g: "The authors acknowledge the technical assistance provided by the Sydney Informatics Hub, a Core Research Facility of the University of Sydney."
@@ -12,8 +12,8 @@ Put this repo on Artemis e.g. in the quickest way you can:
 
 ```
 cd /project/<YOUR_PROJECT>
-git clone https://github.com/Sydney-Informatics-Hub/tensorflow-contained.git
-cd tensorflow-contained
+git clone https://github.com/Sydney-Informatics-Hub/pydl-contained.git
+cd pydl-contained
 jobid=`qsub artemis_build.pbs`
 qsub -W depend=afterok:$jobid artemis_run.pbs
 ```
@@ -28,21 +28,21 @@ Once you have built the container image you can move that to where your data is 
 ## Build with docker
 Check out this repo then build the Docker file.
 ```
-sudo docker build . -t sydneyinformaticshub/tensorflow:2.3
+sudo docker build . -t sydneyinformaticshub/pydl
 ```
 
 ## Run with docker.
 To run this, mounting your current host directory in the container directory, at /project, and execute a run on the test images (that live in the container) run:
 ```
-sudo docker run -it --gpus=all -v `pwd`:/project sydneyinformaticshub/tensorflow:2.3 /bin/bash -c "cd /project && ipython test.py"
+sudo docker run -it --gpus=all -v `pwd`:/project sydneyinformaticshub/pydl /bin/bash -c "cd /project && ipython test.py"
 ```
 
 ## Push to docker hub
 ```
-sudo docker push sydneyinformaticshub/tensorflow:2.3
+sudo docker push sydneyinformaticshub/pydl
 ```
 
-See the repo at [https://hub.docker.com/r/sydneyinformaticshub/tensorflow](https://hub.docker.com/r/sydneyinformaticshub/tensorflow)
+See the repo at [https://hub.docker.com/r/sydneyinformaticshub/pydl](https://hub.docker.com/r/sydneyinformaticshub/pydl)
 
 
 ## Build with singularity
@@ -50,12 +50,12 @@ See the repo at [https://hub.docker.com/r/sydneyinformaticshub/tensorflow](https
 export SINGULARITY_CACHEDIR=`pwd`
 export SINGULARITY_TMPDIR=`pwd`
 
-singularity build tf.img docker://sydneyinformaticshub/tensorflow:2.3
+singularity build pydl.img docker://sydneyinformaticshub/pydl
 ```
-This will create the `tf.img` image file.
+This will create the `pydl.img` image file.
 
 ## Run with singularity
-To run the singularity image (noting singularity mounts the current folder by default)
+To run the singularity image (noting singularity attempts to mount the current folder by default plus /project and /scratch)
 ```
-singularity run --nv --bind /project:/project tf.img /bin/bash -c "cd "$PBS_O_WORKDIR" && ipython test.py"
+singularity run --nv pydl.img /bin/bash -c "cd "$PBS_O_WORKDIR" && ipython test.py"
 ```
