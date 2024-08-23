@@ -39,7 +39,7 @@ RUN pip install dglgo==0.0.1
 # # for translation tasks and sinkformer
 RUN pip install torchmetrics==0.11.4 sentencepiece nltk evaluate tiktoken prenlp einops wandb==0.12
 RUN pip install https://storage.googleapis.com/jax-releases/cuda102/jaxlib-0.1.71+cuda102-cp38-none-manylinux2010_x86_64.whl && \
-pip install jax==0.1.71
+pip install jax==0.2
 # # for LRA
 RUN pip install flax==0.2 ml-collections tensorflow-datasets && \
  pip install --no-deps torchtext==0.13
