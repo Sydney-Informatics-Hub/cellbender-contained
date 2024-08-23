@@ -1,41 +1,48 @@
-# Container for tensorflow
-# Compare compatibility for TF, CUDA, Python versions:
-# https://www.tensorflow.org/install/source#tested_build_configurations
-# This image has a max Cuda of 10.2 and python 3.8 as base.
+# Container for Tensorflow, Pytorch, Jax, and other Python Deep Learning tools.
+# Compatibility has been balanced for Ubuntu 16.04 -> Cuda 10.2 -> and stacks herein.
 
 #To build this file:
-#sudo docker build . -t sydneyinformaticshub/tensorflow:2.3
+#sudo docker build . -t sydneyinformaticshub/pydl
 
 #To run this, mounting your current host directory in the container directory,
 # at /project, and excute an example run:
-#sudo docker run --gpus=all -it -v `pwd`:/project sydneyinformaticshub/tensorflow:2.3 /bin/bash -c "cd /project && ipython test.py"
+#sudo docker run --gpus=all -it -v `pwd`:/project sydneyinformaticshub/pydl /bin/bash -c "cd /project && ipython test.py"
 
 #To push to docker hub:
-#sudo docker push sydneyinformaticshub/tensorflow:2.3
+#sudo docker push sydneyinformaticshub/pydl
 
 #To build a singularity container
 #export SINGULARITY_CACHEDIR=`pwd`
 #export SINGULARITY_TMPDIR=`pwd`
-#singularity build tf.img docker://sydneyinformaticshub/tensorflow:2.3
+#singularity build pydl.img docker://sydneyinformaticshub/pydl:
 
 #To run the singularity image (noting singularity mounts the current folder by default)
-#singularity run --nv --bind /project:/project tf.img /bin/bash -c "cd "$PBS_O_WORKDIR" && ipython test.py"
+#singularity run --nv --bind /project:/project pydl.img /bin/bash -c "cd "$PBS_O_WORKDIR" && ipython test.py"
 
 # Pull base image.
-FROM nbutter/pytorch:ubuntu1604
-MAINTAINER Nathaniel Butterworth USYD SIH
+FROM sydneyinformaticshub/tensorflow:2.3
+# Cotains ubuntu=16.04, cuda=10.2, conda=22.9.0, python=3.8.13, pytorch==1.11.0, tensorflow=2.3.0, scikit-learn==1.3.1
+# Inherits Artemis touch points: /usr/bin/nvidia-smi, /project, and /scratch
+LABEL Author="Nathaniel Butterworth USYD SIH"
 
-RUN touch /usr/bin/nvidia-smi
+# Update python to 3.10
+# RUN conda install python=3.10
 
-# Fix a few bugs by upgrading these libraries
-RUN pip install -U scikit-learn numpy protobuf pandas==1.4.4 matplotlib==3.5.3 ipython && \
-  pip install -U tensorflow==2.3 && \
-  pip install -U protobuf==3.20.* && \
-  pip cache purge
+# Update to pytorch 1.12.1
+RUN conda install pytorch==1.12.1 torchvision==0.13.1 torchaudio==0.12.1 cudatoolkit=10.2 -c pytorch
 
-
-#TF 2.3 uses Cuda 10.1, so just copy Cuda10.2
-RUN ln -s /usr/local/cuda-10.2/targets/x86_64-linux/lib/libcudart.so /usr/local/cuda-10.2/targets/x86_64-linux/lib/libcudart.so.10.1
-ENV LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/cuda-10.2/targets/x86_64-linux/lib/
+# Install additional packages.s
+RUN pip install functorch==0.2.1 transformers datasets accelerate
+RUN pip install dgl==1.1.1 -f https://data.dgl.ai/wheels/cu102/repo.html
+RUN pip install dglgo==0.0.1
+#
+# # for translation tasks and sinkformer
+RUN pip install torchmetrics==0.11.4 sentencepiece nltk evaluate tiktoken prenlp einops wandb==0.12
+RUN pip install https://storage.googleapis.com/jax-releases/cuda102/jaxlib-0.1.71+cuda102-cp38-none-manylinux2010_x86_64.whl && \
+pip install jax==0.1.71
+# # for LRA
+RUN pip install flax==0.2 ml-collections tensorflow-datasets && \
+ pip install --no-deps torchtext==0.13
+RUN pip cache purge
 
 CMD /build/miniconda3/bin/python

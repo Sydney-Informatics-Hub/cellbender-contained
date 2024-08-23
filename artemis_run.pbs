@@ -11,4 +11,4 @@ cd $PBS_O_WORKDIR
 ### 2 EXAMPLE WORKFLOW ###
 export SINGULARITY_CACHEDIR=`pwd`
 export SINGULARITY_TMPDIR=`pwd`
-singularity run --nv --bind /project:/project tf.img /bin/bash -c "ipython test.py"
+singularity run --nv --bind /project:/project pydl.img /bin/bash -c "ipython test.py"
